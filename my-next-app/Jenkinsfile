@@ -1,17 +1,14 @@
 pipeline {
-  agent any
-
-  environment {
-    SONARQUBE = 'SonarQube'   // Nom du serveur Sonar défini dans Jenkins (voir plus bas)
-  }
-
-  stages {
-    stage('Checkout') {
-      steps {
-        checkout scm
-      }
+  agent {
+    docker {
+      image 'node:18'
+      args '-u root'
     }
-
+  }
+  environment {
+    SONAR_TOKEN = credentials('sonar')
+  }
+  stages {
     stage('Install dependencies') {
       steps {
         sh 'npm install'
@@ -25,9 +22,12 @@ pipeline {
     }
 
     stage('SonarQube Scan') {
+      environment {
+        SONAR_HOST_URL = 'http://sonarqube:9000'
+      }
       steps {
-        withSonarQubeEnv('SonarQube') {
-          sh 'sonar-scanner'
+        withSonarQubeEnv('MySonarQube') {
+          sh 'npx sonar-scanner'
         }
       }
     }
@@ -35,7 +35,7 @@ pipeline {
 
   post {
     always {
-      archiveArtifacts artifacts: '**/build/**', allowEmptyArchive: true
+      archiveArtifacts artifacts: '**/coverage/**, .next/**', allowEmptyArchive: true
     }
   }
 }
