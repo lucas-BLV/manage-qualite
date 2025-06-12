@@ -1,0 +1,41 @@
+pipeline {
+  agent any
+
+  environment {
+    SONARQUBE = 'SonarQube'   // Nom du serveur Sonar défini dans Jenkins (voir plus bas)
+  }
+
+  stages {
+    stage('Checkout') {
+      steps {
+        checkout scm
+      }
+    }
+
+    stage('Install dependencies') {
+      steps {
+        sh 'npm install'
+      }
+    }
+
+    stage('Build Next.js') {
+      steps {
+        sh 'npm run build'
+      }
+    }
+
+    stage('SonarQube Scan') {
+      steps {
+        withSonarQubeEnv('SonarQube') {
+          sh 'sonar-scanner'
+        }
+      }
+    }
+  }
+
+  post {
+    always {
+      archiveArtifacts artifacts: '**/build/**', allowEmptyArchive: true
+    }
+  }
+}
