@@ -4,7 +4,7 @@ pipeline {
     environment {
         SONAR_PROJECT_KEY = 'client-crud-app'
         SONAR_HOST_URL = 'http://sonarqube:9000'
-        SONAR_LOGIN = credentials('sonar') // Ajouté via Jenkins > Credentials
+        SONAR_LOGIN = credentials('sonar')
     }
 
     stages {
@@ -16,32 +16,32 @@ pipeline {
 
         stage('Install') {
             steps {
-                sh 'cd client-crud-app && npm install'
+                sh 'npm install'
             }
         }
 
         stage('Lint') {
             steps {
-                sh 'cd client-crud-app && npx eslint .'
+                sh 'npx eslint .'
             }
         }
 
         stage('Build') {
             steps {
-                sh 'cd client-crud-app && npm run build'
+                sh 'npm run build'
             }
         }
 
         stage('Test') {
             steps {
-                sh 'cd client-crud-app && npm test || true'
+                sh 'npm test || true'
             }
         }
 
         stage('SonarQube Analysis') {
             steps {
                 withSonarQubeEnv('SonarQube') {
-                    sh 'cd client-crud-app && sonar-scanner'
+                    sh 'sonar-scanner'
                 }
             }
         }
