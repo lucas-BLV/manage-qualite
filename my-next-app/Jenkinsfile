@@ -1,33 +1,49 @@
 pipeline {
-  agent any
-  environment {
-    SONAR_TOKEN = credentials('sonar')
-  }
-  stages {
-    stage('Install dependencies') {
-      steps {
-        sh 'npm install'
-      }
-    }
-    stage('Build Next.js') {
-      steps {
-        sh 'npm run build'
-      }
-    }
-    stage('SonarQube Scan') {
-      environment {
+    agent any
+
+    environment {
+        SONAR_PROJECT_KEY = 'my-next-app'
         SONAR_HOST_URL = 'http://sonarqube:9000'
-      }
-      steps {
-        withSonarQubeEnv('MySonarQube') {
-          sh 'npx sonar-scanner'
+        SONAR_LOGIN = credentials('sonar-token') // Ajouter via Jenkins > Credentials
+    }
+
+    stages {
+        stage('Checkout') {
+            steps {
+                git 'https://github.com/<votre-utilisateur>/<repo>.git'
+            }
         }
-      }
+
+        stage('Install') {
+            steps {
+                sh 'npm ci'
+            }
+        }
+
+        stage('Lint') {
+            steps {
+                sh 'npx eslint .'
+            }
+        }
+
+        stage('Build') {
+            steps {
+                sh 'npm run build'
+            }
+        }
+
+        stage('Test') {
+            steps {
+                sh 'npm test || true' // facultatif si pas encore de tests
+            }
+        }
+
+        stage('SonarQube Analysis') {
+            steps {
+                withSonarQubeEnv('SonarQube') {
+                    sh 'sonar-scanner'
+                }
+            }
+        }
     }
-  }
-  post {
-    always {
-      archiveArtifacts artifacts: '**/coverage/**, .next/**', allowEmptyArchive: true
-    }
-  }
 }

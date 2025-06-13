@@ -1,0 +1,28 @@
+version: '3.8'
+services:
+  jenkins:
+    build: ./jenkins
+    ports:
+      - "8080:8080"
+      - "50000:50000"
+    volumes:
+      - jenkins_home:/var/jenkins_home
+    environment:
+      - JAVA_OPTS=-Djenkins.install.runSetupWizard=false
+
+  sonarqube:
+    image: sonarqube:community
+    ports:
+      - "9000:9000"
+    environment:
+      SONAR_ES_BOOTSTRAP_CHECKS_DISABLE: "true"
+
+  node:
+    image: node:20
+    working_dir: /app
+    volumes:
+      - ./:/app
+    command: sh -c "npm install && npm run build"
+
+volumes:
+  jenkins_home:
