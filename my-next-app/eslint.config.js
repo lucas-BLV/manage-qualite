@@ -1,37 +1,37 @@
-// my-next-app/eslint.config.js
-import eslintPluginReact from 'eslint-plugin-react';
-import eslintPluginTypescript from '@typescript-eslint/eslint-plugin';
-import parser from '@typescript-eslint/parser';
+// eslint.config.js
+import reactPlugin from "eslint-plugin-react";
+import typescriptPlugin from "@typescript-eslint/eslint-plugin";
+import typescriptParser from "@typescript-eslint/parser";
+
+import reactRecommended from "eslint-plugin-react/configs/recommended.js";
+import typescriptRecommended from "@typescript-eslint/eslint-plugin/dist/configs/recommended.js";
 
 export default [
+  // Etendre les configs recommandées directement dans le tableau
+  ...reactRecommended,
+  ...typescriptRecommended,
+
   {
     files: ["*.js", "*.jsx", "*.ts", "*.tsx"],
     languageOptions: {
       ecmaVersion: 2024,
       sourceType: "module",
-      parser,
+      parser: typescriptParser,
       parserOptions: {
-        project: './tsconfig.json', // nécessaire pour certains checks TS
+        project: "./tsconfig.json",
+        tsconfigRootDir: __dirname,
       },
     },
     plugins: {
-      react: eslintPluginReact,
-      '@typescript-eslint': eslintPluginTypescript,
+      react: reactPlugin,
+      "@typescript-eslint": typescriptPlugin,
     },
     rules: {
-      // règles React
-      'react/jsx-uses-react': 'warn',
-      'react/jsx-uses-vars': 'warn',
-
-      // règles TypeScript recommandées
-      '@typescript-eslint/no-unused-vars': ['warn', { argsIgnorePattern: '^_' }],
-      '@typescript-eslint/explicit-function-return-type': 'off',
-
-      // tu peux ajouter d'autres règles ici
+      // Tes règles custom
+      "react/jsx-uses-react": "warn",
+      "react/jsx-uses-vars": "warn",
+      "@typescript-eslint/no-unused-vars": ["warn", { argsIgnorePattern: "^_" }],
+      "@typescript-eslint/explicit-function-return-type": "off",
     },
-    extends: [
-      // tu peux aussi étendre des configs comme recommandées ici
-      // mais attention, dans eslint.config.js ce n'est pas la même syntaxe qu'en .eslintrc
-    ],
   },
 ];
