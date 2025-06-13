@@ -3,10 +3,10 @@ import eslintPluginReact from 'eslint-plugin-react';
 
 export default [
   {
-    files: ['**/*.js', '**/*.jsx'],
+    files: ["*.js", "*.jsx", "*.ts", "*.tsx"],
     languageOptions: {
-      ecmaVersion: 'latest',
-      sourceType: 'module',
+      ecmaVersion: 2024,
+      sourceType: "module",
     },
     plugins: {
       react: eslintPluginReact,
