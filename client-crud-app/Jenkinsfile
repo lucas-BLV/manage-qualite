@@ -16,7 +16,7 @@ pipeline {
 
         stage('Install') {
             steps {
-                sh 'cd client-crud-app && npm ci'
+                sh 'cd client-crud-app && npm install'
             }
         }
 
