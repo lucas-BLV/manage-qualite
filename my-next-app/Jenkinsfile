@@ -4,13 +4,13 @@ pipeline {
     environment {
         SONAR_PROJECT_KEY = 'my-next-app'
         SONAR_HOST_URL = 'http://sonarqube:9000'
-        SONAR_LOGIN = credentials('sonar-token') // Ajouter via Jenkins > Credentials
+        SONAR_LOGIN = credentials('sonar')
     }
 
     stages {
         stage('Checkout') {
             steps {
-                git 'https://github.com/<votre-utilisateur>/<repo>.git'
+                git 'https://github.com/lucas-BLV/manage-qualite.git'
             }
         }
 
@@ -34,7 +34,7 @@ pipeline {
 
         stage('Test') {
             steps {
-                sh 'npm test || true' // facultatif si pas encore de tests
+                sh 'npm test || true'
             }
         }
 
