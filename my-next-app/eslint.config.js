@@ -1,6 +1,7 @@
 // my-next-app/eslint.config.js
 import eslintPluginReact from 'eslint-plugin-react';
 import eslintPluginTypescript from '@typescript-eslint/eslint-plugin';
+import parser from '@typescript-eslint/parser';
 
 export default [
   {
@@ -8,7 +9,7 @@ export default [
     languageOptions: {
       ecmaVersion: 2024,
       sourceType: "module",
-      parser: '@typescript-eslint/parser',
+      parser,
       parserOptions: {
         project: './tsconfig.json', // nécessaire pour certains checks TS
       },
