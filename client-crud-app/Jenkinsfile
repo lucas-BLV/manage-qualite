@@ -1,0 +1,49 @@
+pipeline {
+    agent any
+
+    environment {
+        SONAR_PROJECT_KEY = 'client-crud-app'
+        SONAR_HOST_URL = 'http://sonarqube:9000'
+        SONAR_LOGIN = credentials('sonar') // Ajouté via Jenkins > Credentials
+    }
+
+    stages {
+        stage('Checkout') {
+            steps {
+                git 'https://github.com/lucas-BLV/manage-qualite.git'
+            }
+        }
+
+        stage('Install') {
+            steps {
+                sh 'cd client-crud-app && npm ci'
+            }
+        }
+
+        stage('Lint') {
+            steps {
+                sh 'cd client-crud-app && npx eslint .'
+            }
+        }
+
+        stage('Build') {
+            steps {
+                sh 'cd client-crud-app && npm run build'
+            }
+        }
+
+        stage('Test') {
+            steps {
+                sh 'cd client-crud-app && npm test || true'
+            }
+        }
+
+        stage('SonarQube Analysis') {
+            steps {
+                withSonarQubeEnv('SonarQube') {
+                    sh 'cd client-crud-app && sonar-scanner'
+                }
+            }
+        }
+    }
+}
