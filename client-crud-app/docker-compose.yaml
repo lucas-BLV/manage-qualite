@@ -1,0 +1,31 @@
+version: "3"
+
+services:
+  database:
+    container_name: database
+    image: postgres:14
+    volumes:
+      - ./database:/docker-entrypoint-initdb.d/
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: app
+      POSTGRES_HOST_AUTH_METHOD: md5
+    ports:
+      - "2345:5432"
+  front:
+    container_name: front
+    build: ./front/
+    volumes:
+      - ./front/projet/:/work/projet/
+    ports:
+      - "80:5173"
+  back:
+    container_name: back
+    depends_on:
+      - database
+    build: ./back/
+    volumes:
+      - ./back/projet/:/work/projet/
+    ports:
+      - "443:5173"
