@@ -4,7 +4,7 @@ pipeline {
     environment {
         SONAR_PROJECT_KEY = 'my-next-app'
         SONAR_HOST_URL = 'http://sonarqube:9000'
-        SONAR_LOGIN = credentials('sonar-token') // Ajouté via Jenkins > Credentials
+        SONAR_LOGIN = credentials('sonar') // Ajouté via Jenkins > Credentials
     }
 
     stages {
