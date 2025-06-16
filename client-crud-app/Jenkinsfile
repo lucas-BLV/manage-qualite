@@ -14,36 +14,61 @@ pipeline {
             }
         }
 
-        stage('Install') {
+        stage('Install Front') {
             steps {
-                sh 'npm install'
+                dir('client-crud-app/front/projet') {
+                    sh 'npm install'
+                }
             }
         }
 
-        stage('Lint') {
+        stage('Lint Front') {
             steps {
-                sh 'npx eslint .'
+                dir('client-crud-app/front/projet') {
+                    sh 'npx eslint .'
+                }
             }
         }
 
-        stage('Build') {
+        stage('Build Front') {
             steps {
-                sh 'npm run build'
+                dir('client-crud-app/front/projet') {
+                    sh 'npm run build'
+                }
             }
         }
 
-        stage('Test') {
+        stage('Test Front') {
             steps {
-                sh 'npm test || true'
+                dir('client-crud-app/front/projet') {
+                    sh 'npm test || true' // en tolérant les erreurs de test
+                }
             }
         }
 
         stage('SonarQube Analysis') {
             steps {
-                withSonarQubeEnv('SonarQube') {
-                    sh 'sonar-scanner'
+                dir('client-crud-app/front/projet') {
+                    withSonarQubeEnv('SonarQube') {
+                        sh """
+                            sonar-scanner \
+                                -Dsonar.projectKey=${SONAR_PROJECT_KEY} \
+                                -Dsonar.sources=src \
+                                -Dsonar.host.url=${SONAR_HOST_URL} \
+                                -Dsonar.login=${SONAR_LOGIN}
+                        """
+                    }
                 }
             }
+        }
+    }
+
+    post {
+        success {
+            echo 'Pipeline exécuté avec succès !'
+        }
+        failure {
+            echo 'Échec de la pipeline.'
         }
     }
 }
