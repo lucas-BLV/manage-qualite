@@ -49,7 +49,7 @@ pipeline {
         stage('SonarQube Analysis') {
             steps {
                 dir('client-crud-app/front/projet') {
-                    withSonarQubeEnv('SonarQube') {
+                    withSonarQubeEnv('sonar') {
                         sh """
                             sonar-scanner \
                                 -Dsonar.projectKey=${SONAR_PROJECT_KEY} \
